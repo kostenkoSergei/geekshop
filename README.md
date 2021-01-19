@@ -1,1 +1,2 @@
 ###Geekshop
+###django-basic course
