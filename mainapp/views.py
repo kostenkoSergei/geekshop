@@ -13,3 +13,12 @@ def products(request):
         'title': 'каталог'
     }
     return render(request, 'mainapp/products.html', context)
+
+
+def category(request, pk):
+    context = {
+        'products': Product.objects.filter(category=pk),
+        'categories': ProductCategory.objects.all(),
+        'title': ProductCategory.objects.filter(pk=pk)
+    }
+    return render(request, 'mainapp/category.html', context)

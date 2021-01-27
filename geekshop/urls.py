@@ -18,12 +18,13 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from mainapp import views as mainapp_views
+# from mainapp import views as mainapp_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', mainapp_views.index, name='index'),
-    path('products', mainapp_views.products, name='products'),
+    path('', include('mainapp.urls', namespace='products')),
+    # path('', mainapp_views.index, name='index'),
+    # path('products', mainapp_views.products, name='products'),
 ]
 
 if settings.DEBUG:
