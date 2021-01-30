@@ -47,15 +47,20 @@
                                             </div>
                                         </div>
                                         <div class="form-row">
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <label class="small mb-1" for="{{ form.username.id_for_label }}">Имя
                                                     пользователя</label>
                                                 {{ form.username }}
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <label class="small mb-1" for="{{ form.email.id_for_label }}">
                                                     Адрес электронной почты</label>
                                                 {{ form.email }}
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="small mb-1" for="{{ form.city.id_for_label }}">
+                                                    Выберите город</label>
+                                                {{ form.city }}
                                             </div>
                                         </div>
                                         <div class="form-row">
@@ -80,7 +85,8 @@
                                     </form>
                                 </div>
                                 <div class="card-footer text-center">
-                                    <div class="small"><a href="login.html">Уже есть аккаунт? Авторизоваться</a></div>
+                                    <div class="small"><a href="{% url 'auth:login' %}">Уже есть аккаунт?
+                                        Авторизоваться</a></div>
                                 </div>
                             </div>
                         </div>

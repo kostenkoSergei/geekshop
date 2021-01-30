@@ -8353,6 +8353,10 @@ button.bg-dark:focus {
     padding-bottom: 3rem !important;
 }
 
+.py-6 {
+    height: calc(1.5em + 1.5rem + 2px)
+}
+
 .pl-5,
 .px-5 {
     padding-left: 3rem !important;
