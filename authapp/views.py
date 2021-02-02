@@ -4,6 +4,8 @@ from django.urls import reverse
 
 from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
 from authapp.models import User
+from basket.models import Basket
+from django.db.models import Sum, F, FloatField
 
 
 def login(request):
@@ -47,5 +49,16 @@ def profile(request):
             return HttpResponseRedirect(reverse('auth:profile'))
     else:
         form = UserProfileForm(instance=request.user)
-    context = {'form': form}
+    full_price = \
+        Basket.objects.filter(user=request.user).aggregate(
+            full_price=Sum(F('product__price') * F('quantity'), output_field=FloatField()))['full_price']
+    full_quantity = \
+        Basket.objects.filter(user=request.user).aggregate(
+            full_quantity=Sum('quantity'))['full_quantity']
+    context = {
+        'form': form,
+        'baskets': Basket.objects.filter(user=request.user),
+        'full_price': full_price,
+        'full_quantity': full_quantity,
+    }
     return render(request, 'authapp/profile.html', context)
