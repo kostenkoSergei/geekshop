@@ -1,6 +1,7 @@
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from django.core.exceptions import ValidationError
 from authapp.models import User
+from django import forms
 
 
 class UserLoginForm(AuthenticationForm):
@@ -41,6 +42,31 @@ class UserRegisterForm(UserCreationForm):
                 field.widget.attrs['class'] = 'form-control py-4'
             else:
                 field.widget.attrs['class'] = 'form-control py-1 py-6'
+
+    def clean_age(self):
+        data = self.cleaned_data['age']
+        if data < 18:
+            raise ValidationError('Вы слишком молоды!')
+        return data
+
+
+class UserProfileForm(UserChangeForm):
+    avatar = forms.ImageField(widget=forms.FileInput())
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'avatar', 'username', 'email', 'age', 'city')
+
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field_name != 'city':
+                field.widget.attrs['class'] = 'form-control py-4'
+            else:
+                field.widget.attrs['class'] = 'form-control py-6'
+        self.fields['username'].widget.attrs['readonly'] = True
+        self.fields['email'].widget.attrs['readonly'] = True
+        self.fields['avatar'].widget.attrs['class'] = 'custom-file-input'
 
     def clean_age(self):
         data = self.cleaned_data['age']

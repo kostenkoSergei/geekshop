@@ -77,16 +77,11 @@
                                     <h5>{{ product.price }} руб.</h5>
                                     <p class="card-text">{{ product.description|capfirst }} .</p>
                                 </div>
-                                {% if product.price == 23725 %}
-                                    <div class="card-footer text-center">
-                                        <button type="button" class="btn btn-outline-danger">Удалить из корзины</button>
-                                    </div>
-                                {% else %}
-                                    <div class="card-footer text-center">
-                                        <button type="button" class="btn btn-outline-success">Отправить в корзину
-                                        </button>
-                                    </div>
-                                {% endif %}
+                                <div class="card-footer text-center">
+                                    <button type="button" class="btn btn-outline-success">Отправить в корзину
+                                    </button>
+                                </div>
+
                             </div>
                         </div>
                     {% endfor %}
