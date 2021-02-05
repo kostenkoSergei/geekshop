@@ -2,10 +2,13 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth
 from django.urls import reverse
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
 from basket.models import Basket
-from django.db.models import Sum, F, FloatField
+
+
+# from django.db.models import Sum, F, FloatField
 
 
 def login(request):
@@ -42,6 +45,7 @@ def logout(request):
     return HttpResponseRedirect(reverse('products:index'))
 
 
+@login_required
 def profile(request):
     if request.method == 'POST':
         form = UserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
