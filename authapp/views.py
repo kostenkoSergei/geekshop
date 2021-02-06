@@ -1,11 +1,14 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth
 from django.urls import reverse
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
-from authapp.models import User
 from basket.models import Basket
-from django.db.models import Sum, F, FloatField
+
+
+# from django.db.models import Sum, F, FloatField
 
 
 def login(request):
@@ -29,6 +32,7 @@ def register(request):
         form = UserRegisterForm(data=request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Вы успешно зарегистрировались!!!')
             return HttpResponseRedirect(reverse('auth:login'))
     else:
         form = UserRegisterForm()
@@ -41,6 +45,7 @@ def logout(request):
     return HttpResponseRedirect(reverse('products:index'))
 
 
+@login_required
 def profile(request):
     if request.method == 'POST':
         form = UserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
@@ -49,16 +54,21 @@ def profile(request):
             return HttpResponseRedirect(reverse('auth:profile'))
     else:
         form = UserProfileForm(instance=request.user)
-    full_price = \
-        Basket.objects.filter(user=request.user).aggregate(
-            full_price=Sum(F('product__price') * F('quantity'), output_field=FloatField()))['full_price']
-    full_quantity = \
-        Basket.objects.filter(user=request.user).aggregate(
-            full_quantity=Sum('quantity'))['full_quantity']
+    # full_price = \
+    #     Basket.objects.filter(user=request.user).aggregate(
+    #         full_price=Sum(F('product__price') * F('quantity'), output_field=FloatField()))['full_price']
+    # full_quantity = \
+    #     Basket.objects.filter(user=request.user).aggregate(
+    #         full_quantity=Sum('quantity'))['full_quantity']
+
+    baskets = Basket.objects.filter(user=request.user)
+
     context = {
         'form': form,
-        'baskets': Basket.objects.filter(user=request.user),
-        'full_price': full_price,
-        'full_quantity': full_quantity,
+        'baskets': baskets,
+        # 'total_quantity': sum(basket.quantity for basket in baskets),
+        # 'total_sum': sum(basket.sum() for basket in baskets)
+        # 'full_price': full_price,
+        # 'full_quantity': full_quantity,
     }
     return render(request, 'authapp/profile.html', context)
