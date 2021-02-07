@@ -16,3 +16,7 @@ class User(AbstractUser):
                             choices=CITIES_CHOICES,
                             default="MSK",
                             blank=False)
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
