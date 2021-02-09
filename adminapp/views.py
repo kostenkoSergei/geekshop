@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponseRedirect
 from authapp.models import User
-from adminapp.forms import UserAdminRegisterForm, UserAdminProfileForm
+from mainapp.models import Product, ProductCategory
+from adminapp.forms import UserAdminRegisterForm, UserAdminProfileForm, ProductForm
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
 
@@ -51,3 +52,30 @@ def admin_users_delete(request, id):
     user.is_active = False
     user.save()
     return HttpResponseRedirect(reverse('admins:admin_users_read'))
+
+
+@user_passes_test(lambda u: u.is_superuser, login_url=reverse_lazy('mainapp:index'))  # use reverse_lazy for success url
+def admin_products_read(request):
+    context = {'products': Product.objects.all()}
+    return render(request, 'adminapp/admin-products-read.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_products_update(request, id=None):
+    pass
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_products_create(request):
+    if request.method == 'POST':
+        form = ProductForm(data=request.POST, files=request.FILES)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('admins:admin_products_read'))
+        else:
+            print(form.errors)
+    else:
+        form = ProductForm()
+    context = {'form': form}
+    print(context)
+    return render(request, 'adminapp/admin-products-create.html', context)
