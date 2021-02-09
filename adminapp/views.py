@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponseRedirect
 from authapp.models import User
 from adminapp.forms import UserAdminRegisterForm, UserAdminProfileForm
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
 
 
@@ -10,7 +10,7 @@ def index(request):
     return render(request, 'adminapp/index.html')
 
 
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_superuser, login_url=reverse_lazy('mainapp:index'))  # use reverse_lazy for success url
 def admin_users_read(request):
     context = {'users': User.objects.all()}
     return render(request, 'adminapp/admin-users-read.html', context)
