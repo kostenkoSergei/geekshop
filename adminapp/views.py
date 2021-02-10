@@ -61,11 +61,6 @@ def admin_products_read(request):
 
 
 @user_passes_test(lambda u: u.is_superuser)
-def admin_products_update(request, id=None):
-    pass
-
-
-@user_passes_test(lambda u: u.is_superuser)
 def admin_products_create(request):
     if request.method == 'POST':
         form = ProductForm(data=request.POST, files=request.FILES)
@@ -79,3 +74,24 @@ def admin_products_create(request):
     context = {'form': form}
     print(context)
     return render(request, 'adminapp/admin-products-create.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_products_update(request, id):
+    product = Product.objects.get(pk=id)
+    if request.method == 'POST':
+        form = ProductForm(data=request.POST, files=request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('admins:admin_products_read'))
+    else:
+        form = ProductForm(instance=product)
+    context = {'form': form, 'current_product': product}
+    return render(request, 'adminapp/admin-products-update-delete.html', context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_products_delete(request, id):
+    product = Product.objects.get(pk=id)
+    product.delete()
+    return HttpResponseRedirect(reverse('admins:admin_products_read'))
