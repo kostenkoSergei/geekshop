@@ -2,9 +2,9 @@ from django.shortcuts import render
 from mainapp.models import Product, ProductCategory
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-
-def index(request):
-    return render(request, 'mainapp/index.html')
+# rewrote using view in mainapp/urls.py
+# def index(request):
+#     return render(request, 'mainapp/index.html')
 
 
 # def products(request, category_id=None):

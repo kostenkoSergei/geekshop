@@ -1,43 +1,59 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
 from basket.models import Basket
 
+from django.views.generic.edit import CreateView
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.views import LoginView
+
 
 # from django.db.models import Sum, F, FloatField
 
 
-def login(request):
-    if request.method == 'POST':
-        form = UserLoginForm(data=request.POST)
-        if form.is_valid():
-            username = request.POST['username']
-            password = request.POST['password']
-            user = auth.authenticate(username=username, password=password)
-            if user and user.is_active:
-                auth.login(request, user)
-                return HttpResponseRedirect(reverse('products:index'))
-    else:
-        form = UserLoginForm()
-    context = {'form': form}
-    return render(request, 'authapp/login.html', context)
+# def login(request):
+#     if request.method == 'POST':
+#         form = UserLoginForm(data=request.POST)
+#         if form.is_valid():
+#             username = request.POST['username']
+#             password = request.POST['password']
+#             user = auth.authenticate(username=username, password=password)
+#             if user and user.is_active:
+#                 auth.login(request, user)
+#                 return HttpResponseRedirect(reverse('products:index'))
+#     else:
+#         form = UserLoginForm()
+#     context = {'form': form}
+#     return render(request, 'authapp/login.html', context)
 
 
-def register(request):
-    if request.method == 'POST':
-        form = UserRegisterForm(data=request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Вы успешно зарегистрировались!!!')
-            return HttpResponseRedirect(reverse('auth:login'))
-    else:
-        form = UserRegisterForm()
-    context = {'form': form}
-    return render(request, 'authapp/register.html', context)
+class UserLoginView(LoginView):
+    template_name = 'authapp/login.html'
+    form_class = UserLoginForm
+
+
+# def register(request):
+#     if request.method == 'POST':
+#         form = UserRegisterForm(data=request.POST)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, 'Вы успешно зарегистрировались!!!')
+#             return HttpResponseRedirect(reverse('auth:login'))
+#     else:
+#         form = UserRegisterForm()
+#     context = {'form': form}
+#     return render(request, 'authapp/register.html', context)
+
+
+class UserRegisterView(SuccessMessageMixin, CreateView):
+    template_name = 'authapp/register.html'
+    success_url = reverse_lazy('auth:login')
+    form_class = UserRegisterForm
+    success_message = 'Вы успешно зарегистрировались!!!'
 
 
 def logout(request):
