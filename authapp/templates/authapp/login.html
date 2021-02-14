@@ -30,6 +30,7 @@
                                 <div class="card-body">
                                     <form action="{% url 'auth:login' %}" method="post">
                                         {% csrf_token %}
+                                        <input type="hidden" name="next" value="{% url 'products:index' %}">
                                         <div class="form-group">
                                             <label class="small mb-1" for="{{ form.username.id_for_label }}">Имя
                                                 пользователя</label>
