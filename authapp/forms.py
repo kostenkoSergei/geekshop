@@ -1,3 +1,6 @@
+import hashlib
+import random
+
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from django.core.exceptions import ValidationError
 from authapp.models import User
@@ -48,6 +51,14 @@ class UserRegisterForm(UserCreationForm):
         if data < 18:
             raise ValidationError('Вы слишком молоды!')
         return data
+
+    def save(self, commit=True):
+        user =super().save()
+        user.is_active = False
+        salt = hashlib.sha1(str(random.random()).encode('utf8')).hexdigest()
+        user.activation_key = hashlib.sha1(str(user.email + salt).encode('utf8')).hexdigest()
+        user.save()
+        return user
 
 
 class UserProfileForm(UserChangeForm):
