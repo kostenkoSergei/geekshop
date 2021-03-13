@@ -1,4 +1,5 @@
-from django.shortcuts import render, HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect, Http404, redirect
+from django.http import HttpResponse
 from django.contrib import auth
 from django.urls import reverse, reverse_lazy
 from django.contrib import messages
@@ -10,6 +11,19 @@ from basket.models import Basket
 from django.views.generic.edit import CreateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.views import LoginView
+from .models import User
+from .utils import send_virify_email
+
+
+def verify(request, user_id, hash):
+    user = User.objects.get(pk=user_id)
+    if user.activation_key == hash and not user.is_activation_key_expired():
+        user.is_active = True
+        user.activation_key = None
+        user.save()
+        auth.login(request, user)
+        return HttpResponseRedirect(reverse('mainapp:index'))
+    return render(request, 'authapp/404_page.html')
 
 
 # from django.db.models import Sum, F, FloatField
@@ -53,7 +67,17 @@ class UserRegisterView(SuccessMessageMixin, CreateView):
     template_name = 'authapp/register.html'
     success_url = reverse_lazy('auth:login')
     form_class = UserRegisterForm
-    success_message = 'Вы успешно зарегистрировались!!!'
+    success_message = 'Проверьте почту!!!'
+
+    def post(self, request, *args, **kwargs):
+        """rewrote post method to add send mail verification logic"""
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            send_virify_email(user)
+            messages.success(request, 'Проверьте почту!!!')
+            return HttpResponseRedirect(reverse_lazy('auth:login'))
+        return render(request, 'authapp/register.html', {'form': form})
 
 
 def logout(request):

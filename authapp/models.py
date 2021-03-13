@@ -1,5 +1,7 @@
+from datetime import timedelta
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils.timezone import now
 
 CITIES_CHOICES = (
     ('MSK', 'Moscow'),
@@ -16,6 +18,12 @@ class User(AbstractUser):
                             choices=CITIES_CHOICES,
                             default="MSK",
                             blank=False)
+    activation_key = models.CharField(max_length=64, blank=True, null=True)
+    activation_key_expires = models.DateTimeField(default=now() + timedelta(hours=48))
+
+    def is_activation_key_expired(self):
+        return False if now() <= self.activation_key_expires else True
+
 
     class Meta:
         verbose_name = 'Пользователь'

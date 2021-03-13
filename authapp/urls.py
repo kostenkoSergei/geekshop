@@ -11,4 +11,5 @@ urlpatterns = [
     path('register/', authapp_views.UserRegisterView.as_view(), name='register'),
     path('logout/', authapp_views.logout, name='logout'),
     path('profile/', authapp_views.profile, name='profile'),
+    path('verify/<int:user_id>/<hash>', authapp_views.verify, name='verify'),
 ]
