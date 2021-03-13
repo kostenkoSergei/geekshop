@@ -22,7 +22,7 @@ def verify(request, user_id, hash):
         user.activation_key = None
         user.save()
         auth.login(request, user)
-        return HttpResponseRedirect(reverse('mainapp:index'))
+        return render(request, 'authapp/verification.html')
     return render(request, 'authapp/404_page.html')
 
 

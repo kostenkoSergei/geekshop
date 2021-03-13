@@ -1,0 +1,20 @@
+{% extends 'authapp/base.html' %}
+
+{% block content %}
+    <div id="layoutRegistration">
+        <div id="layoutRegistration_content">
+                <div class="container">
+                    {% if user.is_authenticated %}
+                        <div class="card mt-5" style="width: 18rem;">
+                            <div class="card-body">
+                                <h3 class="card-title">Вы успешно авторизированы!</h3>
+                                <button type="button" class="btn btn-success">
+                                    <a href="{% url 'mainapp:index' %}" class="card-link">На главную</a>
+                                </button>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+        </div>
+    </div>
+{% endblock %}
