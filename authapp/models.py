@@ -13,7 +13,7 @@ CITIES_CHOICES = (
 
 class User(AbstractUser):
     avatar = models.ImageField(upload_to='users_avatar', blank=True)
-    age = models.SmallIntegerField(blank=True, null=True)
+    age = models.SmallIntegerField(blank=True, null=True, default=18)
     city = models.CharField(max_length=24,
                             choices=CITIES_CHOICES,
                             default="MSK",

@@ -21,7 +21,7 @@ def verify(request, user_id, hash):
         user.is_active = True
         user.activation_key = None
         user.save()
-        auth.login(request, user)
+        auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         return render(request, 'authapp/verification.html')
         # return render(request, 'authapp/404_page.html')
     raise Http404
@@ -29,8 +29,6 @@ def verify(request, user_id, hash):
 def handle_page_not_found(request, exception, template_name="authapp/404_page.html"):
     return render(request,template_name)
 
-# def handle_page_not_found(request, exception):
-#     return render(request, 'authapp/404_page.html')
 
 # from django.db.models import Sum, F, FloatField
 

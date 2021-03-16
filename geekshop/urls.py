@@ -30,6 +30,7 @@ urlpatterns = [
     path('admin-staff/', include('adminapp.urls', namespace='admins')),
     # path('', mainapp_views.index, name='index'),
     # path('products', mainapp_views.products, name='products'),
+    path('', include('social_django.urls', namespace='social')),
 ]
 
 if settings.DEBUG:
