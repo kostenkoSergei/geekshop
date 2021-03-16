@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponseRedirect, Http404, redirect
+from django.shortcuts import render, HttpResponseRedirect, Http404, redirect, get_object_or_404, render_to_response
 from django.http import HttpResponse
 from django.contrib import auth
 from django.urls import reverse, reverse_lazy
@@ -23,8 +23,14 @@ def verify(request, user_id, hash):
         user.save()
         auth.login(request, user)
         return render(request, 'authapp/verification.html')
-    return render(request, 'authapp/404_page.html')
+        # return render(request, 'authapp/404_page.html')
+    raise Http404
 
+def handle_page_not_found(request, exception, template_name="authapp/404_page.html"):
+    return render(request,template_name)
+
+# def handle_page_not_found(request, exception):
+#     return render(request, 'authapp/404_page.html')
 
 # from django.db.models import Sum, F, FloatField
 

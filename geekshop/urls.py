@@ -20,6 +20,8 @@ from django.conf.urls.static import static
 
 # from mainapp import views as mainapp_views
 
+handler404 = 'authapp.views.handle_page_not_found'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('mainapp.urls', namespace='products')),
