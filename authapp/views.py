@@ -5,7 +5,7 @@ from django.urls import reverse, reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
+from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm, ShopUserProfileEditForm
 from basket.models import Basket
 
 from django.views.generic.edit import CreateView
@@ -93,11 +93,15 @@ def logout(request):
 def profile(request):
     if request.method == 'POST':
         form = UserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
-        if form.is_valid():
+        profile_form = ShopUserProfileEditForm(data=request.POST, instance=request.user.shopuserprofile)
+        if form.is_valid() and profile_form.is_valid():
             form.save()
+            profile_form.save()
+
             return HttpResponseRedirect(reverse('auth:profile'))
     else:
         form = UserProfileForm(instance=request.user)
+        profile_form = ShopUserProfileEditForm(instance=request.user.shopuserprofile)
     # full_price = \
     #     Basket.objects.filter(user=request.user).aggregate(
     #         full_price=Sum(F('product__price') * F('quantity'), output_field=FloatField()))['full_price']
@@ -109,6 +113,7 @@ def profile(request):
 
     context = {
         'form': form,
+        'profile_form': profile_form,
         'baskets': baskets,
         # 'total_quantity': sum(basket.quantity for basket in baskets),
         # 'total_sum': sum(basket.sum() for basket in baskets)
