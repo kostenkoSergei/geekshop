@@ -3,7 +3,9 @@ import random
 
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from django.core.exceptions import ValidationError
-from authapp.models import User
+from django.forms import Textarea
+
+from authapp.models import User, ShopUserProfile
 from django import forms
 
 
@@ -53,7 +55,7 @@ class UserRegisterForm(UserCreationForm):
         return data
 
     def save(self, commit=True):
-        user =super().save()
+        user = super().save()
         user.is_active = False
         salt = hashlib.sha1(str(random.random()).encode('utf8')).hexdigest()
         user.activation_key = hashlib.sha1(str(user.email + salt).encode('utf8')).hexdigest()
@@ -69,7 +71,7 @@ class UserProfileForm(UserChangeForm):
         fields = ('first_name', 'last_name', 'avatar', 'username', 'email', 'age', 'city')
 
     def __init__(self, *args, **kwargs):
-        super(UserProfileForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             if field_name != 'city':
                 field.widget.attrs['class'] = 'form-control py-4'
@@ -84,3 +86,17 @@ class UserProfileForm(UserChangeForm):
         if data < 18:
             raise ValidationError('Вы слишком молоды!')
         return data
+
+
+class ShopUserProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = ShopUserProfile
+        fields = ('tagline', 'aboutMe', 'gender')
+        widgets = {
+            'aboutMe': Textarea(attrs={'rows': 5, 'cols': 5}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'

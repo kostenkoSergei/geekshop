@@ -1,11 +1,12 @@
-from django.shortcuts import render, HttpResponseRedirect, Http404, redirect
+from django.db import transaction
+from django.shortcuts import render, HttpResponseRedirect, Http404, redirect, get_object_or_404, render_to_response
 from django.http import HttpResponse
 from django.contrib import auth
 from django.urls import reverse, reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
+from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm, ShopUserProfileEditForm
 from basket.models import Basket
 
 from django.views.generic.edit import CreateView
@@ -21,9 +22,13 @@ def verify(request, user_id, hash):
         user.is_active = True
         user.activation_key = None
         user.save()
-        auth.login(request, user)
+        auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         return render(request, 'authapp/verification.html')
-    return render(request, 'authapp/404_page.html')
+        # return render(request, 'authapp/404_page.html')
+    raise Http404
+
+def handle_page_not_found(request, exception, template_name="authapp/404_page.html"):
+    return render(request,template_name)
 
 
 # from django.db.models import Sum, F, FloatField
@@ -86,14 +91,19 @@ def logout(request):
 
 
 @login_required
+@transaction.atomic
 def profile(request):
     if request.method == 'POST':
         form = UserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
-        if form.is_valid():
+        profile_form = ShopUserProfileEditForm(data=request.POST, instance=request.user.shopuserprofile)
+        if form.is_valid() and profile_form.is_valid():
             form.save()
+            # profile_form.save()
+
             return HttpResponseRedirect(reverse('auth:profile'))
     else:
         form = UserProfileForm(instance=request.user)
+        profile_form = ShopUserProfileEditForm(instance=request.user.shopuserprofile)
     # full_price = \
     #     Basket.objects.filter(user=request.user).aggregate(
     #         full_price=Sum(F('product__price') * F('quantity'), output_field=FloatField()))['full_price']
@@ -105,6 +115,7 @@ def profile(request):
 
     context = {
         'form': form,
+        'profile_form': profile_form,
         'baskets': baskets,
         # 'total_quantity': sum(basket.quantity for basket in baskets),
         # 'total_sum': sum(basket.sum() for basket in baskets)
