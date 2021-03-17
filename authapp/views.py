@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.shortcuts import render, HttpResponseRedirect, Http404, redirect, get_object_or_404, render_to_response
 from django.http import HttpResponse
 from django.contrib import auth
@@ -90,13 +91,14 @@ def logout(request):
 
 
 @login_required
+@transaction.atomic
 def profile(request):
     if request.method == 'POST':
         form = UserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
         profile_form = ShopUserProfileEditForm(data=request.POST, instance=request.user.shopuserprofile)
         if form.is_valid() and profile_form.is_valid():
             form.save()
-            profile_form.save()
+            # profile_form.save()
 
             return HttpResponseRedirect(reverse('auth:profile'))
     else:
