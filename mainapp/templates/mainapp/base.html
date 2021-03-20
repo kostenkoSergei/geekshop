@@ -55,8 +55,8 @@
                                     class="fas fa-shopping-basket"></i></a>
                             <a class="dropdown-item" href="{% url 'auth:logout' %}">Выйти <i
                                     class="fas fa-sign-out-alt"></i></a>
-                            {#                            <a class="dropdown-item" href="{% url 'ordersapp:orders_list' %}">Заказы <i#}
-                            {#                                    class="fas fa-shopping-basket"></i></a>#}
+                            <a class="dropdown-item" href="{% url 'ordersapp:orders_list' %}">Заказы <i
+                                    class="fas fa-shopping-basket"></i></a>
                         </div>
                     </div>
                     {% if user.is_superuser or user.is_stuff %}
