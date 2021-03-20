@@ -91,7 +91,8 @@
                 </div>
 
                 <nav aria-label="Page navigation example">
-                    {% if products|length >= 1 and products.paginator.count > 1 %}
+{#                    {% if products|length >= 1 and products.paginator.count > 1 %}#}
+                    {% if products|length >= 1 %}
                         <ul class="pagination justify-content-center">
                             {% if products|length > 1 %}
                             {% endif %}
@@ -100,7 +101,7 @@
                                    href="{% if products.has_previous %} {% url 'products:page' products.previous_page_number %}{% endif %}"
                                    tabindex="-1" aria-disabled="true">Previous</a>
                             </li>
-                            {% for page in products.paginator.page_range %}
+                            {% for page in page_obj.paginator.page_range %}
                                 <li class="page-item">
                                     <a class="page-link" href="{% url 'products:page' page %}">{{ page }}</a>
                                 </li>
