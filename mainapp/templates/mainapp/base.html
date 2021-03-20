@@ -42,19 +42,23 @@
                 </li>
 
                 {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'auth:profile' %}">{{ user.username }}
-                            <i class="fas fa-user-circle"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'auth:profile' %}">{{ user_basket.0.total_sum }}
-                            <i class="fas fa-shopping-basket"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'auth:logout' %}">Выйти <i class="fas fa-sign-out-alt"></i></a>
-                    </li>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Личный кабинет
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="{% url 'auth:profile' %}">Профайл <i
+                                    class="fas fa-user-circle"></i></a>
+                            <a class="dropdown-item"
+                               href="{% url 'auth:profile' %}">Корзина: {{ user_basket.0.total_sum }} <i
+                                    class="fas fa-shopping-basket"></i></a>
+                            <a class="dropdown-item" href="{% url 'auth:logout' %}">Выйти <i
+                                    class="fas fa-sign-out-alt"></i></a>
+                            {#                            <a class="dropdown-item" href="{% url 'ordersapp:orders_list' %}">Заказы <i#}
+                            {#                                    class="fas fa-shopping-basket"></i></a>#}
+                        </div>
+                    </div>
                     {% if user.is_superuser or user.is_stuff %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'admins:index' %}"><i class="fas fa-user-secret"></i></a>
@@ -77,6 +81,13 @@
 <!-- Bootstrap core JavaScript -->
 <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
 <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
 
 <!-- FontAwesome script -->
 <script src="{% static 'vendor/fontawesome/fontawesome-icons.js' %}" crossorigin="anonymous"></script>
