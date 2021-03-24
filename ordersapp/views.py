@@ -25,6 +25,7 @@ class OrderItemsCreate(CreateView):
     model = Order
     fields = []
     success_url = reverse_lazy('ordersapp:orders_list')
+
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemForm, extra=1)
@@ -45,7 +46,6 @@ class OrderItemsCreate(CreateView):
 
         data['orderitems'] = formset
         return data
-
 
     def form_valid(self, form):
         context = self.get_context_data()
@@ -85,6 +85,7 @@ class OrderItemsUpdate(UpdateView):
         orderitems = context['orderitems']
 
         with transaction.atomic():
+            Basket.objects.filter(user=self.request.user).delete()
             form.instance.user = self.request.user
             self.object = form.save()
             if orderitems.is_valid():
