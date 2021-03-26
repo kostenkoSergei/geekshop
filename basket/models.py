@@ -47,7 +47,7 @@ class Basket(models.Model):
         self.product.save()
 
     def save(self, *args):
-        # self.refresh_quantity()
+        self.refresh_quantity()
         super().save(*args)
 
     class Meta:
