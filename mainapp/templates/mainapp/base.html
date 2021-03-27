@@ -51,8 +51,12 @@
                             <a class="dropdown-item" href="{% url 'auth:profile' %}">Профайл <i
                                     class="fas fa-user-circle"></i></a>
                             <a class="dropdown-item"
-                               href="{% url 'auth:profile' %}">Корзина: {{ user_basket.0.total_sum }} <i
-                                    class="fas fa-shopping-basket"></i></a>
+                               href="{% url 'auth:profile' %}">Корзина: {% if user_basket_counter %}
+                                {{ user_basket.0.total_sum }}р. {{ user_basket_counter }}  ед.
+                            {% else %} нет товаров
+                            {% endif %}
+                                <i
+                                        class="fas fa-shopping-basket"></i></a>
                             <a class="dropdown-item" href="{% url 'auth:logout' %}">Выйти <i
                                     class="fas fa-sign-out-alt"></i></a>
                             <a class="dropdown-item" href="{% url 'ordersapp:orders_list' %}">Заказы <i
@@ -74,7 +78,7 @@
         </div>
     </div>
 </nav>
-
+<div style="height: 100px"></div>
 {% block content %}{% endblock %}
 
 {% block footer %}{% endblock %}
@@ -91,7 +95,7 @@
 
 <!-- FontAwesome script -->
 <script src="{% static 'vendor/fontawesome/fontawesome-icons.js' %}" crossorigin="anonymous"></script>
-{% block scripts %}{% endblock %}
+{% block js %}{% endblock %}
 
 </body>
 
