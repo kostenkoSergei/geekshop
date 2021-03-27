@@ -11,8 +11,9 @@ class ProductView(ListView):
     paginate_by = 3
 
     def get_queryset(self):
-        if self.request.GET.get('category_id'):
-            return Product.objects.filter(category_id=self.kwargs['category_id'])
+        data = self.kwargs
+        if data.get('category_id'):
+            return Product.objects.filter(category_id=data['category_id'])
         return Product.objects.all()
 
     def get_context_data(self, **kwargs):
