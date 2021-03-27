@@ -1,4 +1,7 @@
 from django.shortcuts import HttpResponseRedirect, get_object_or_404
+from django.urls import reverse_lazy
+from django.views.generic import DeleteView
+
 from mainapp.models import Product
 from basket.models import Basket
 from django.contrib.auth.decorators import login_required
@@ -19,12 +22,17 @@ def basket_add(request, product_id):
     basket.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+class BasketRemove(DeleteView):
+    model = Basket
+    def get_success_url(self):
+        return reverse_lazy('auth:profile')
 
-@login_required
-def basket_remove(request, id):
-    basket = Basket.objects.get(pk=id)
-    basket.delete()
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+# @login_required
+# def basket_remove(request, id):
+#     basket = Basket.objects.get(pk=id)
+#     basket.delete()
+#     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 @login_required

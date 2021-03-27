@@ -27,6 +27,7 @@ urlpatterns = [
     path('', include('mainapp.urls', namespace='products')),
     path('auth/', include('authapp.urls', namespace='auth')),
     path('baskets/', include('basket.urls', namespace='baskets')),
+    path('orders/', include('ordersapp.urls', namespace='order')),
     path('admin-staff/', include('adminapp.urls', namespace='admins')),
     # path('', mainapp_views.index, name='index'),
     # path('products', mainapp_views.products, name='products'),
