@@ -18,7 +18,8 @@ class ProductView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = ProductCategory.objects.all()
+        # context['categories'] = ProductCategory.objects.all()
+        context['categories'] = ProductCategory.get_all()
         return context
 
 # def products(request, category_id=None, page=1):
