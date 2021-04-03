@@ -2,8 +2,10 @@ from django.shortcuts import render
 from django.views.generic import ListView
 
 from mainapp.models import Product, ProductCategory
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
-
+@method_decorator(cache_page(120), name='dispatch')
 class ProductView(ListView):
     model = Product
     context_object_name = 'products'
