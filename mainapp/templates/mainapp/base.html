@@ -52,7 +52,7 @@
                                     class="fas fa-user-circle"></i></a>
                             <a class="dropdown-item"
                                href="{% url 'auth:profile' %}">Корзина: {% if user_basket_counter %}
-                                {{ user_basket.0.total_sum }}р. {{ user_basket_counter }}  ед.
+                                {{ user_basket.total_sum }}р. {{ user_basket_counter }}  ед.
                             {% else %} нет товаров
                             {% endif %}
                                 <i
