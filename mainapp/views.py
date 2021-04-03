@@ -2,8 +2,10 @@ from django.shortcuts import render
 from django.views.generic import ListView
 
 from mainapp.models import Product, ProductCategory
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
-
+@method_decorator(cache_page(120), name='dispatch')
 class ProductView(ListView):
     model = Product
     context_object_name = 'products'
@@ -18,7 +20,8 @@ class ProductView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = ProductCategory.objects.all()
+        # context['categories'] = ProductCategory.objects.all()
+        context['categories'] = ProductCategory.get_all()
         return context
 
 # def products(request, category_id=None, page=1):
