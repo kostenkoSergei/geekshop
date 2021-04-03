@@ -9,6 +9,8 @@ from django.views.generic.detail import DetailView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
+from django.views.decorators.cache import cache_page
+
 from basket.models import Basket
 from mainapp.models import Product
 from ordersapp.models import Order, OrderItem
@@ -131,10 +133,17 @@ def order_forming_complete(request, pk):
     return HttpResponseRedirect(reverse('ordersapp:orders_list'))
 
 
+# def get_product_price(request, pk):
+#     if request.is_ajax():
+#         product = Product.objects.filter(pk=int(pk)).first()
+#         if product:
+#             return JsonResponse({'price': product.price})
+#         else:
+#             return JsonResponse({'price': 0})
+
+@cache_page(120)
 def get_product_price(request, pk):
-    if request.is_ajax():
-        product = Product.objects.filter(pk=int(pk)).first()
-        if product:
-            return JsonResponse({'price': product.price})
-        else:
-            return JsonResponse({'price': 0})
+    product = Product.objects.filter(pk=int(pk)).first()
+    if product:
+        return JsonResponse({'price': product.price})
+    return JsonResponse({'price': 0})
