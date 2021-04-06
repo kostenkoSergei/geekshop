@@ -19,9 +19,7 @@ def basket_add(request, product_id):
         basket = Basket(user=request.user, product=product)
     else:
         basket = baskets.first()
-    print(basket.quantity)
     basket.quantity += 1
-    print(basket.quantity)
     basket.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
