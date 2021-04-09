@@ -1,6 +1,6 @@
 from authapp.forms import UserRegisterForm, UserProfileForm
 from authapp.models import User
-from mainapp.models import Product
+from mainapp.models import Product, ProductCategory
 from django import forms
 
 
@@ -37,3 +37,17 @@ class ProductForm(forms.ModelForm):
             field.widget.attrs['class'] = 'form-control py-4'
         self.fields['image'].widget.attrs['class'] = 'custom-file-input'
         self.fields['description'].widget.attrs['rows'] = 4
+
+
+class ProductCategoryEditForm(forms.ModelForm):
+    discount = forms.IntegerField(label='скидка', required=False, min_value=0, max_value=90, initial=0)
+
+    def __init__(self, *args, **kwargs):
+        super(ProductCategoryEditForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control py-4'
+        self.fields['description'].widget.attrs['rows'] = 4
+
+    class Meta:
+        model = ProductCategory
+        exclude = ()

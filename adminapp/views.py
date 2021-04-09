@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponseRedirect
 from authapp.models import User
 from mainapp.models import Product, ProductCategory
-from adminapp.forms import UserAdminRegisterForm, UserAdminProfileForm, ProductForm
+from adminapp.forms import UserAdminRegisterForm, UserAdminProfileForm, ProductForm, ProductCategoryEditForm
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
 from django.views.generic.list import ListView
@@ -186,10 +186,52 @@ class ProductUpdateView(UpdateView):
 
 class ProductDeleteView(DeleteView):
     model = Product
-    template_name = 'adminapp/admin-users-update-delete.html'
+    template_name = 'adminapp/admin-products-update-delete.html'
     success_url = reverse_lazy('admins:admin_products_read')
 
     @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def dispatch(self, request, *args, **kwargs):
         return super(ProductDeleteView, self).dispatch(request, *args, **kwargs)
 
+
+class CategoryListView(ListView):
+    model = ProductCategory
+    context_object_name = 'categories'
+    template_name = 'adminapp/admin-categories-read.html'
+
+    @method_decorator(user_passes_test(lambda u: u.is_superuser, login_url=reverse_lazy('mainapp:index')))
+    def dispatch(self, request, *args, **kwargs):
+        return super(CategoryListView, self).dispatch(request, *args, **kwargs)
+
+
+class CategoryCreateView(CreateView):
+    model = ProductCategory
+    template_name = 'adminapp/admin-categories-create.html'
+    form_class = ProductCategoryEditForm
+    success_url = reverse_lazy('admins:admin_categories_read')
+
+    @method_decorator(user_passes_test(lambda u: u.is_superuser))
+    def dispatch(self, request, *args, **kwargs):
+        return super(CategoryCreateView, self).dispatch(request, *args, **kwargs)
+
+
+class CategoryUpdateView(UpdateView):
+    model = ProductCategory
+    template_name = 'adminapp/admin-categories-update-delete.html'
+    form_class = ProductCategoryEditForm
+    success_url = reverse_lazy('admins:admin_categories_read')
+    context_object_name = 'current_category'
+
+    @method_decorator(user_passes_test(lambda u: u.is_superuser))
+    def dispatch(self, request, *args, **kwargs):
+        return super(CategoryUpdateView, self).dispatch(request, *args, **kwargs)
+
+
+class CategoryDeleteView(DeleteView):
+    model = ProductCategory
+    template_name = 'adminapp/admin-categories-update-delete.html'
+    success_url = reverse_lazy('admins:admin_categories_read')
+
+    @method_decorator(user_passes_test(lambda u: u.is_superuser))
+    def dispatch(self, request, *args, **kwargs):
+        return super(CategoryDeleteView, self).dispatch(request, *args, **kwargs)
