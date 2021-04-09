@@ -13,15 +13,12 @@ from django.http import JsonResponse
 def basket_add(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
     baskets = Basket.objects.filter(user=request.user, product=product)
-    print(baskets)
 
     if not baskets.exists():
         basket = Basket(user=request.user, product=product)
     else:
         basket = baskets.first()
-    print(basket.quantity)
     basket.quantity += 1
-    print(basket.quantity)
     basket.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
